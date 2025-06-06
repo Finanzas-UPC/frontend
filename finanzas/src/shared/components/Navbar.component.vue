@@ -4,20 +4,30 @@ import {ref} from "vue";
 import { nextTick } from 'vue'
 import store from "./store.ts";
 
-const router = useRouter()
-const menu = ref()
+const router = useRouter();
+const menu = ref();
+const emit = defineEmits(['open-config']);
 
 const items = [
+  {
+    label: 'Configuración',
+    icon: 'pi pi-cog',
+    command: () => { openConfig(); },
+  },
   {
     label: 'Cerrar sesión',
     icon: 'pi pi-sign-out',
     command: () => { logout(); }
   }
-]
+];
 
 const toggle = (event: any) => {
   menu.value.toggle(event);
 };
+
+const openConfig = () => {
+  emit('open-config');
+}
 
 const logout = () => {
   store.dispatch('logout').then(() => {
@@ -37,16 +47,21 @@ const logout = () => {
         <p>BonoApp</p>
       </div>
       <div class="desktop-menu">
+        <pv-button @click="openConfig"
+                   text
+                   icon="pi pi-cog"
+                   class="text-white mr-3"
+                   aria-label="settings"/>
         <pv-button @click="logout"
                    text
                    icon="pi pi-sign-out"
-                   style="color: white; font-size: 20px;"
+                   class="text-white"
                    aria-label="log out"/>
       </div>
       <div class="mobile-menu">
         <pv-button icon="pi pi-bars"
                    text
-                   style="color: white; font-size: 20px;"
+                   class="text-white"
                    @click="toggle"/>
         <pv-menu ref="menu"
                  id="overlay_menu"

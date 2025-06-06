@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import store from "./shared/components/store.ts";
-import NavbarComponent from './shared/components/Navbar.component.vue';
+import Navbar from './shared/components/Navbar.component.vue';
+import ConfigurationDialog from './shared/components/ConfigurationDialog.component.vue';
+import {ref} from "vue";
+
+const showConfig = ref(false);
 </script>
 
 <template>
-  <NavbarComponent v-if="store.getters.isAuthenticated"/>
+  <Navbar v-if="store.getters.isAuthenticated"
+                   @open-config="showConfig = true" />
+  <ConfigurationDialog v-model:visible="showConfig" />
   <router-view/>
 </template>
 

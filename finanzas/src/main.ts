@@ -16,7 +16,8 @@ import IftaLabel from 'primevue/iftalabel'
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import InputText from 'primevue/inputtext';
-
+import Dialog from 'primevue/dialog';
+import Select from 'primevue/select';
 
 const blue = definePreset(Aura, {
     semantic: {
@@ -84,4 +85,7 @@ app.component('pv-ifta-label', IftaLabel);
 app.component('pv-icon-field', IconField);
 app.component('pv-input-icon', InputIcon);
 app.component('pv-input-text', InputText);
+app.component('pv-dialog', Dialog);
+app.component('pv-select', Select);
+
 app.mount('#app');
