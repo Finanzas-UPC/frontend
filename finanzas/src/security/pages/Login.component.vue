@@ -22,11 +22,14 @@ const login = async () => {
 
   try {
     const response = await authenticationService.signIn(username.value, password.value);
-    const loginResponse = response.data as LoginResponse;
+    const loginResponse = {
+      ...response.data,
+      userId: response.data.id, // Map 'id' to 'userId'
+    } as LoginResponse;
 
     await store.dispatch('login', {
       token: loginResponse.token,
-      userId: loginResponse.userId,
+      userId: Number(loginResponse.userId),
     });
 
     await router.push('/home');
@@ -67,7 +70,7 @@ const login = async () => {
                                  variant="filled"
                                  style="width: 100%;"
                                  type="password"
-                                 />
+                  />
                 </pv-icon-field>
                 <label for="password">Contraseña</label>
               </pv-ifta-label>

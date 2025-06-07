@@ -1,34 +1,34 @@
-import axios, {type AxiosRequestConfig, type AxiosResponse} from "axios";
+import axios, { type AxiosRequestConfig, type AxiosResponse } from "axios";
+
+const BASE_API_URL = "http://localhost:8080/api/v1";
 
 export class BaseService<T = any> {
-    private readonly baseURL: string;
     private readonly endpoint: string;
-    private token: string | null;
-    private httpOptions: AxiosRequestConfig;
+    protected token: string | null;
+    protected httpOptions: AxiosRequestConfig;
 
     constructor(endpoint: string) {
-        this.baseURL = import.meta.env.VITE_API_URL;
         this.endpoint = endpoint;
-        this.token = localStorage.getItem('token');
+        this.token = localStorage.getItem("token");
         this.httpOptions = this.getHttpOptions();
     }
 
-    private getHttpOptions(): AxiosRequestConfig {
+    protected setToken(): void {
+        this.token = localStorage.getItem("token");
+        this.httpOptions = this.getHttpOptions();
+    }
+
+    protected getHttpOptions(): AxiosRequestConfig {
         return {
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.token}`
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${this.token}`
             }
         };
     }
 
-    private setToken(): void {
-        this.token = localStorage.getItem('token');
-        this.httpOptions = this.getHttpOptions();
-    }
-
     protected endpointPath(): string {
-        return `${this.baseURL}/${this.endpoint}`;
+        return `${BASE_API_URL}/${this.endpoint}`;
     }
 
     getOne(id: string | number): Promise<AxiosResponse<T>> {

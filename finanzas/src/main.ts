@@ -5,19 +5,21 @@ import 'primeflex/primeflex.css';
 import App from './App.vue';
 import PrimeVue from 'primevue/config';
 import Aura from '@primeuix/themes/aura';
-import {definePreset} from "@primeuix/themes";
+import { definePreset } from "@primeuix/themes";
 import store from "./shared/components/store.ts";
 import router from "./shared/components/router.ts";
 // PrimeVue components
 import Button from 'primevue/button';
 import Menu from 'primevue/menu';
 import Card from 'primevue/card';
-import IftaLabel from 'primevue/iftalabel'
+import IftaLabel from 'primevue/iftalabel';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import InputText from 'primevue/inputtext';
 import Dialog from 'primevue/dialog';
 import Select from 'primevue/select';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
 
 const blue = definePreset(Aura, {
     semantic: {
@@ -87,5 +89,7 @@ app.component('pv-input-icon', InputIcon);
 app.component('pv-input-text', InputText);
 app.component('pv-dialog', Dialog);
 app.component('pv-select', Select);
+app.component('pv-datatable', DataTable);
+app.component('pv-column', Column);
 
 app.mount('#app');

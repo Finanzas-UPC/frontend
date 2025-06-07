@@ -1,0 +1,18 @@
+import type { AxiosResponse } from "axios";
+import { BaseService } from "../../shared/services/base.service";
+import type { Bond } from "../models/bond.entity";
+import axios from "axios";
+
+class BondService extends BaseService<Bond> {
+    constructor() {
+        super("bonds"); // Define el endpoint base
+    }
+
+    getByUser(userId: number): Promise<AxiosResponse<Bond[]>> {
+        this.setToken();
+        return axios.get<Bond[]>(`${this.endpointPath()}/user/${userId}`, this.httpOptions);
+    }
+
+}
+
+export const bondService = new BondService();
