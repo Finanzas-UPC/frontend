@@ -5,7 +5,7 @@ import axios from "axios";
 
 class BondService extends BaseService<Bond> {
     constructor() {
-        super("bonds"); // Define el endpoint base
+        super("bonds");
     }
 
     getByUser(userId: number): Promise<AxiosResponse<Bond[]>> {
@@ -13,6 +13,15 @@ class BondService extends BaseService<Bond> {
         return axios.get<Bond[]>(`${this.endpointPath()}/user/${userId}`, this.httpOptions);
     }
 
+    getCashflowByBondId(id: number): Promise<AxiosResponse<any>> {
+        this.setToken();
+        return axios.get<any>(`${this.endpointPath()}/${id}/cashflow`, this.httpOptions);
+    }
+
+    getMetricsByBondId(id: number): Promise<AxiosResponse<any>> {
+        this.setToken();
+        return axios.get<any>(`${this.endpointPath()}/${id}/metrics`, this.httpOptions);
+    }
 }
 
 export const bondService = new BondService();

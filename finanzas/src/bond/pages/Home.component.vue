@@ -3,9 +3,16 @@ import { ref, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
 import { bondService } from '../services/bond.service.ts';
 import type { Bond } from '../models/bond.entity.ts';
+import {useRouter} from "vue-router";
 
 const store = useStore();
 const currency = computed(() => store.getters.getCurrency);
+
+const router = useRouter();
+
+const viewBond = (id: number) => {
+  router.push(`/bond/details/${id}`);
+};
 
 const bonds = ref<Bond[]>([]);
 
@@ -41,7 +48,7 @@ onMounted(loadBonds);
           <p><strong>Plazo:</strong> {{ bond.duration }} años</p>
           <p><strong>Fecha de emisión:</strong> {{ bond.emissionDate }}</p>
           <div class="bond-actions">
-            <button class="action-button" @click="">Ver</button>
+            <button class="action-button" @click="bond.id !== undefined && viewBond(bond.id)">Ver</button>
             <button class="action-button" @click="">Editar</button>
           </div>
         </div>
@@ -54,9 +61,7 @@ onMounted(loadBonds);
 <style scoped>
 h2 {
   text-align: center;
-  margin-top: 16px;
-  color: #333;
-  padding: 0 16px;
+  margin-bottom: 20px;
 }
 
 .bond-container {
