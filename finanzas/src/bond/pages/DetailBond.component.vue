@@ -2,9 +2,10 @@
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { bondService } from '../services/bond.service.ts';
+import type { BondMetrics } from '../models/bondmetrics.entity.ts';
 
 const route = useRoute();
-const metrics = ref({
+const metrics = ref<BondMetrics>({
   id: 0,
   bondId: 0,
   duration: 0,
@@ -95,4 +96,3 @@ h2 {
   color: #000;
 }
 </style>
-```
