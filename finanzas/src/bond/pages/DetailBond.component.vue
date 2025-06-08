@@ -5,16 +5,7 @@ import { bondService } from '../services/bond.service.ts';
 import type { BondMetrics } from '../models/bondmetrics.entity.ts';
 
 const route = useRoute();
-const metrics = ref<BondMetrics>({
-  id: 0,
-  bondId: 0,
-  duration: 0,
-  convexity: 0,
-  totalDurationConvexity: 0,
-  modifiedDuration: 0,
-  tcea: 0,
-  trea: 0,
-});
+const metrics = ref<BondMetrics | null>(null);
 
 const loadMetrics = async () => {
   const bondId = Number(route.params.id);
@@ -27,10 +18,9 @@ const loadMetrics = async () => {
 onMounted(loadMetrics);
 </script>
 
-```vue
 <template>
   <h2>Detalles del bono</h2>
-  <div class="metrics-wrapper">
+  <div class="metrics-wrapper" v-if="metrics">
     <div class="metrics-container">
       <div class="metric-card">
         <p class="label">Duración</p>
