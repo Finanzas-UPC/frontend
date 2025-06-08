@@ -1,23 +1,35 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { useStore } from 'vuex';
 import { bondService } from '../services/bond.service.ts';
 import type { Bond } from '../models/bond.entity.ts';
 
-const bonds = ref<Bond[]>([]); // Especifica el tipo Bond[]
-const userId = Number(localStorage.getItem('userId'));
+const store = useStore();
+const currency = computed(() => store.getters.getCurrency);
+
+const bonds = ref<Bond[]>([]);
 
 const loadBonds = async () => {
-  const res = await bondService.getByUser(userId);
+  const res = await bondService.getByUser(Number(store.getters.getUserId));
   bonds.value = res.data;
-
-  bonds.value.forEach(bond => {
-    console.log(`Bond ID: ${bond.id}, Duration: ${bond.duration}, Emission Date: ${bond.emissionDate}`);
-  });
 };
 
+const formattedAmount = (amount: number) => {
+  switch (currency.value) {
+    case 'USD':
+      return `$ ${amount}`;
+    case 'EUR':
+      return `€ ${amount}`;
+    case 'PEN':
+      return `S/. ${amount}`;
+    default:
+      return amount.toString();
+  }
+};
 
 onMounted(loadBonds);
 </script>
+
 
 <template>
   <div>
@@ -25,8 +37,8 @@ onMounted(loadBonds);
     <div class="bond-container">
       <div class="bond-grid">
         <div class="bond-card" v-for="bond in bonds" :key="bond.id">
-          <p><strong>Valor nominal:</strong> {{ bond.amount }}</p>
-          <p><strong>Plazo:</strong> {{ bond.duration }}</p>
+          <p><strong>Valor nominal:</strong> {{ formattedAmount(bond.amount) }}</p>
+          <p><strong>Plazo:</strong> {{ bond.duration }} años</p>
           <p><strong>Fecha de emisión:</strong> {{ bond.emissionDate }}</p>
           <div class="bond-actions">
             <button class="action-button" @click="">Ver</button>
@@ -102,7 +114,7 @@ h2 {
   display: flex;
   justify-content: center;
   margin: 16px auto;
-  padding: 12px 24px;
+  padding: 22px 54px;
   font-size: 16px;
   max-width: 100%;
   width: fit-content;

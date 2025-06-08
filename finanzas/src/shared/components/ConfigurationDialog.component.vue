@@ -6,8 +6,8 @@ const props = defineProps({
     type: Boolean,
     required: true,
   }
-})
-const emit = defineEmits(['update:visible']);
+});
+const emit = defineEmits(['update:visible', 'currency-updated']);
 const dialogVisible = computed({
   get: () => props.visible,
   set: (val: boolean) => emit('update:visible', val)
@@ -29,6 +29,7 @@ const handleSave = () => {
   localStorage.setItem('currency', currency.value);
   localStorage.setItem('interestRateType', interestRateType.value);
   localStorage.setItem('capitalization', displayCapitalization.value);
+  emit('currency-updated', currency.value);
   closeDialog();
 };
 const closeDialog = () => {

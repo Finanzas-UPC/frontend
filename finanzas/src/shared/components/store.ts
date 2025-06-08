@@ -1,9 +1,10 @@
-import {type ActionContext, createStore } from "vuex";
+import { type ActionContext, createStore } from "vuex";
 
 interface State {
     token: string | null;
     userId: string | null;
     isAuthenticated: boolean;
+    currency: string;
 }
 
 export default createStore<State>({
@@ -11,6 +12,7 @@ export default createStore<State>({
         token: localStorage.getItem('token'),
         userId: localStorage.getItem('userId'),
         isAuthenticated: !!localStorage.getItem('token'),
+        currency: localStorage.getItem('currency') || 'PEN',
     },
     mutations: {
         setToken(state: State, token: string | null) {
@@ -26,6 +28,10 @@ export default createStore<State>({
                 ? localStorage.setItem('userId', userId)
                 : localStorage.removeItem('userId');
         },
+        setCurrency(state: State, currency: string) {
+            state.currency = currency;
+            localStorage.setItem('currency', currency);
+        },
     },
     actions: {
         login(
@@ -39,6 +45,12 @@ export default createStore<State>({
             commit('setToken', null);
             commit('setUserId', null);
         },
+        updateCurrency(
+            { commit }: ActionContext<State, State>,
+            currency: string
+        ) {
+            commit('setCurrency', currency);
+        },
     },
     getters: {
         isAuthenticated(state: State): boolean {
@@ -49,6 +61,9 @@ export default createStore<State>({
         },
         getUserId(state: State): string | null {
             return state.userId;
+        },
+        getCurrency(state: State): string {
+            return state.currency;
         },
     },
 });
