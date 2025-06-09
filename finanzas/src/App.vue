@@ -6,13 +6,13 @@ import { ref } from 'vue';
 
 const showConfig = ref(false);
 
-const handleCurrencyUpdated = (newCurrency: string) => {
-  store.dispatch('updateCurrency', newCurrency); // Actualiza el store de Vuex
+const handleCurrency= (newCurrency: string) => {
+  store.dispatch('updateCurrency', newCurrency);
 };
 </script>
 
 <template>
   <Navbar v-if="store.getters.isAuthenticated" @open-config="showConfig = true" />
-  <ConfigurationDialog v-model:visible="showConfig" @currency-updated="handleCurrencyUpdated" />
+  <ConfigurationDialog v-model:visible="showConfig" @currency-updated="handleCurrency" />
   <router-view />
 </template>

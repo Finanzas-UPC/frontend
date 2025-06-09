@@ -42,10 +42,13 @@ const logout = () => {
 <template>
   <header>
     <nav class="nav-container" id="navbar">
-      <div class="nav-logo">
-        <img src="/assets/images/logo.png" width="50px" height="50px" alt="software logo" />
-        <p>BonoApp</p>
-      </div>
+      <router-link to="/" style="text-decoration: none">
+        <div class="nav-logo">
+          <img src="/assets/images/logo.png" width="50px" height="50px" alt="software logo" />
+          <p>BonoApp</p>
+        </div>
+      </router-link>
+
       <div class="desktop-menu">
         <pv-button @click="openConfig"
                    text

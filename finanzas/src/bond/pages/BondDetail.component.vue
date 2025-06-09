@@ -3,11 +3,11 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { bondService } from '../services/bond.service.ts';
 import type { BondMetrics } from '../models/bondmetrics.entity.ts';
-import type { CashflowItem } from '../models/cashflow.entity.ts';
+import type { CashFlowItem } from '../models/cashflow.entity.ts';
 
 const route = useRoute();
 const metrics = ref<BondMetrics | null>(null);
-const cashflow = ref<CashflowItem[]>([]);
+const cashflow = ref<CashFlowItem[]>([]);
 
 const loadMetrics = async () => {
   const bondId = Number(route.params.id);
@@ -17,7 +17,7 @@ const loadMetrics = async () => {
   }
 };
 
-const loadCashflow = async () => {
+const loadCashFlow = async () => {
   const bondId = Number(route.params.id);
   if (!isNaN(bondId)) {
     const res = await bondService.getCashflowByBondId(bondId);
@@ -39,7 +39,7 @@ const loadCashflow = async () => {
 
 onMounted(() => {
   loadMetrics();
-  loadCashflow();
+  loadCashFlow();
 });
 </script>
 

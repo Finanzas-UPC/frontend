@@ -75,9 +75,9 @@ const closeDialog = () => {
       </div>
     </div>
     <template #footer>
-      <div class="flex flex-row gap-4 w-full justify-content-center">
-        <pv-button label="Guardar" severity="info" @click="handleSave" />
-        <pv-button label="Cancelar" severity="danger" @click="closeDialog" />
+      <div class="flex w-full gap-3">
+        <pv-button class="flex-1" label="Guardar" severity="info" @click="handleSave" />
+        <pv-button class="flex-1" label="Cancelar" variant="text" severity="danger" @click="closeDialog" />
       </div>
     </template>
   </pv-dialog>

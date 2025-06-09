@@ -8,7 +8,7 @@ class BondService extends BaseService<Bond> {
         super("bonds");
     }
 
-    getByUser(userId: number): Promise<AxiosResponse<Bond[]>> {
+    getByUserId(userId: number): Promise<AxiosResponse<Bond[]>> {
         this.setToken();
         return axios.get<Bond[]>(`${this.endpointPath()}/user/${userId}`, this.httpOptions);
     }

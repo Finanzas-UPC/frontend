@@ -1,4 +1,3 @@
-// src/types/Bond.ts
 export interface Bond {
     id?: number;
     userId: number;

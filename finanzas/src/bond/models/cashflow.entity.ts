@@ -1,4 +1,4 @@
-export interface CashflowItem {
+export interface CashFlowItem {
     date: string;
     gracePeriod: string;
     initialBalance: number;

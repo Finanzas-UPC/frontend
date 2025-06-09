@@ -3,7 +3,7 @@ import store from './store';
 import LoginComponent from '../../security/pages/Login.component.vue';
 import SignUpComponent from '../../security/pages/SignUp.component.vue';
 import HomeComponent from '../../bond/pages/Home.component.vue';
-import DetailBondComponent from '../../bond/pages/DetailBond.component.vue';
+import BondDetailComponent from '../../bond/pages/BondDetail.component.vue';
 
 const routes: RouteRecordRaw[] = [
     { path: '/', redirect: '/home' },
@@ -11,7 +11,7 @@ const routes: RouteRecordRaw[] = [
     { path: '/login', component: LoginComponent },
     { path: '/signup', component: SignUpComponent },
     { path: '/home', component: HomeComponent, meta: { requiresAuth: true } },
-    { path: '/bond/details/:id', component: DetailBondComponent, meta: { requiresAuth: true } },
+    { path: '/bond/details/:id', component: BondDetailComponent, meta: { requiresAuth: true } },
 ]
 
 const router = createRouter({
