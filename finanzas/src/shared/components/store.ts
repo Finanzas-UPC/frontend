@@ -5,7 +5,21 @@ interface State {
     userId: string | null;
     isAuthenticated: boolean;
     currency: string;
+    interestRateType: string;
+    capitalization: number;
 }
+
+const CAPITALIZATION_MAP: Record<string, number> = {
+    'Diaria': 1,
+    'Quincenal': 15,
+    'Mensual': 30,
+    'Bimestral': 60,
+    'Trimestral': 90,
+    'Cuatrimestral': 120,
+    'Semestral': 180,
+    'Anual': 360,
+    'No aplica': 0
+};
 
 export default createStore<State>({
     state: {
@@ -13,6 +27,8 @@ export default createStore<State>({
         userId: localStorage.getItem('userId'),
         isAuthenticated: !!localStorage.getItem('token'),
         currency: localStorage.getItem('currency') || 'PEN',
+        interestRateType: localStorage.getItem('interestRateType') || 'Nominal',
+        capitalization: parseInt(localStorage.getItem('capitalization') || '30'), // Mensual por defecto
     },
     mutations: {
         setToken(state: State, token: string | null) {
@@ -32,12 +48,18 @@ export default createStore<State>({
             state.currency = currency;
             localStorage.setItem('currency', currency);
         },
+        setInterestRateType(state: State, rateType: string) {
+            state.interestRateType = rateType;
+            localStorage.setItem('interestRateType', rateType);
+        },
+        setCapitalization(state: State, cap: string) {
+            const days = CAPITALIZATION_MAP[cap] ?? 30;
+            state.capitalization = days;
+            localStorage.setItem('capitalization', days.toString());
+        },
     },
     actions: {
-        login(
-            { commit }: ActionContext<State, State>,
-            payload: { token: string; userId: string }
-        ) {
+        login({ commit }: ActionContext<State, State>, payload: { token: string; userId: string }) {
             commit('setToken', payload.token);
             commit('setUserId', payload.userId);
         },
@@ -45,11 +67,14 @@ export default createStore<State>({
             commit('setToken', null);
             commit('setUserId', null);
         },
-        updateCurrency(
-            { commit }: ActionContext<State, State>,
-            currency: string
-        ) {
+        updateCurrency({ commit }: ActionContext<State, State>, currency: string) {
             commit('setCurrency', currency);
+        },
+        updateInterestRateType({ commit }: ActionContext<State, State>, rateType: string) {
+            commit('setInterestRateType', rateType);
+        },
+        updateCapitalization({ commit }: ActionContext<State, State>, cap: string) {
+            commit('setCapitalization', cap);
         },
     },
     getters: {
@@ -64,6 +89,12 @@ export default createStore<State>({
         },
         getCurrency(state: State): string {
             return state.currency;
+        },
+        getInterestRateType(state: State): string {
+            return state.interestRateType;
+        },
+        getCapitalization(state: State): number {
+            return state.capitalization;
         },
     },
 });
