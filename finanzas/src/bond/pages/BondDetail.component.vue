@@ -21,19 +21,7 @@ const loadCashFlow = async () => {
   const bondId = Number(route.params.id);
   if (!isNaN(bondId)) {
     const res = await bondService.getCashflowByBondId(bondId);
-    cashflow.value = res.data.map((item: any) => ({
-      date: item.paymentDate,
-      gracePeriod: item.isGracePeriod ? 'Sí' : 'No',
-      initialBalance: item.initialBalance,
-      interest: item.interest,
-      amortization: item.amortization,
-      finalBalance: item.finalBalance,
-      quota: item.totalPayment,
-      bondholderFlow: item.bondHolderCashFlow,
-      updatedFlow: item.discountedFlow,
-      flowByTerm: item.discountedFlowTimesPeriod,
-      convexityFactor: item.convexityFactor,
-    }));
+    cashflow.value = res.data;
   }
 };
 
@@ -61,49 +49,38 @@ onMounted(() => {
       </div>
       <div class="metric-card">
         <p class="label">TCEA</p>
-        <p class="value">{{ metrics.tcea }} %</p>
+        <p class="value">{{ metrics.tcea * 100 }} %</p>
       </div>
       <div class="metric-card">
         <p class="label">TREA</p>
-        <p class="value">{{ metrics.trea }} %</p>
+        <p class="value">{{ metrics.trea * 100 }} %</p>
       </div>
     </div>
   </div>
 
   <div class="cashflow-wrapper" v-if="cashflow.length">
     <h3>Flujo de caja</h3>
-    <table class="cashflow-table">
-      <thead>
-      <tr>
-        <th>Fecha programada</th>
-        <th>Periodo de Gracia</th>
-        <th>Saldo Inicial</th>
-        <th>Cupon (Interés)</th>
-        <th>Amortización</th>
-        <th>Saldo Final</th>
-        <th>Cuota</th>
-        <th>Flujo Emisor (Bonista)</th>
-        <th>Flujo Actualizado</th>
-        <th>Flujo por Plazo</th>
-        <th>Factor de Convexidad</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="row in cashflow" :key="row.date">
-        <td>{{ row.date }}</td>
-        <td>{{ row.gracePeriod }}</td>
-        <td>{{ row.initialBalance }}</td>
-        <td>{{ row.interest }}</td>
-        <td>{{ row.amortization }}</td>
-        <td>{{ row.finalBalance }}</td>
-        <td>{{ row.quota }}</td>
-        <td>{{ row.bondholderFlow }}</td>
-        <td>{{ row.updatedFlow }}</td>
-        <td>{{ row.flowByTerm }}</td>
-        <td>{{ row.convexityFactor }}</td>
-      </tr>
-      </tbody>
-    </table>
+    <pv-datatable
+        :value="cashflow"
+        paginator
+        :rows="50"
+        :rowsPerPageOptions="[5, 10, 25, 50]"
+    >
+      <pv-column field="paymentDate" header="Fecha programada" />
+      <pv-column field="isGracePeriod" header="Periodo de Gracia">
+        <template #body="slotProps">
+          {{ slotProps.data.isGracePeriod ? 'Sí' : 'No' }}
+        </template>
+      </pv-column>
+      <pv-column field="initialBalance" header="Saldo Inicial" />
+      <pv-column field="interest" header="Cupon (Interés)" />
+      <pv-column field="amortization" header="Amortización" />
+      <pv-column field="finalBalance" header="Saldo Final" />
+      <pv-column field="totalPayment" header="Cuota" />
+      <pv-column field="issuerCashFlow" header="Flujo Emisor" />
+      <pv-column field="bondHolderCashFlow" header="Flujo Bonista" />
+    </pv-datatable>
+
   </div>
 </template>
 
@@ -116,6 +93,8 @@ h2, h3 {
 .metrics-wrapper, .cashflow-wrapper {
   padding: 0 16px;
   box-sizing: border-box;
+  width: 80%;
+  margin: 0 auto;
 }
 
 .metrics-container {
@@ -145,22 +124,5 @@ h2, h3 {
 .value {
   font-size: 18px;
   color: #000;
-}
-
-.cashflow-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 20px 0;
-}
-
-.cashflow-table th, .cashflow-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: center;
-}
-
-.cashflow-table th {
-  background-color: #f4f4f4;
-  font-weight: bold;
 }
 </style>

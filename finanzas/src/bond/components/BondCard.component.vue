@@ -3,6 +3,7 @@ import {useStore} from "vuex";
 import {computed} from "vue";
 import {useRouter} from "vue-router";
 import type {Bond} from "../models/bond.entity.js";
+import {formatCurrency} from "../../shared/utils/currencyFormatter.ts";
 
 const store = useStore();
 const currency = computed(() => store.getters.getCurrency);
@@ -15,19 +16,6 @@ defineProps<{
 const viewBond = (id: number) => {
   router.push(`/bond/details/${id}`);
 };
-
-const formattedAmount = (amount: number) => {
-  switch (currency.value) {
-    case 'USD':
-      return `$ ${amount}`;
-    case 'EUR':
-      return `€ ${amount}`;
-    case 'PEN':
-      return `S/. ${amount}`;
-    default:
-      return amount.toString();
-  }
-};
 </script>
 
 <template>
@@ -39,7 +27,7 @@ const formattedAmount = (amount: number) => {
       <p class="text-center m-0 p-0">{{ bond.emissionDate }}</p>
     </template>
     <template #content>
-      <p><strong>Valor nominal:</strong> {{ formattedAmount(bond.amount) }}</p>
+      <p><strong>Valor nominal:</strong> {{ formatCurrency(bond.amount, currency) }}</p>
       <p><strong>Plazo:</strong> {{ bond.duration }} años</p>
     </template>
     <template #footer>
