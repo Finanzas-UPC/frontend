@@ -26,9 +26,9 @@ const saveBond = async (newBond: Bond) => {
     const res = await bondService.create(newBond);
     bonds.value.push(res.data);
     showAddDialog.value = false;
-    toast.add({ severity: 'success', summary: 'Éxito', detail: 'Bono agregado correctamente.' });
+    toast.add({ severity: 'success', summary: 'Éxito', detail: 'Bono agregado correctamente.', life: 3000 });
   } catch (error) {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo guardar el bono.' });
+    toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo guardar el bono.', life: 3000 });
   }
 };
 
