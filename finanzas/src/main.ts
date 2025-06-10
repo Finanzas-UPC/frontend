@@ -9,6 +9,7 @@ import { definePreset } from "@primeuix/themes";
 import store from "./shared/components/store.ts";
 import router from "./shared/components/router.ts";
 // PrimeVue components
+import ToastService from 'primevue/toastservice';
 import Button from 'primevue/button';
 import Menu from 'primevue/menu';
 import Card from 'primevue/card';
@@ -20,6 +21,9 @@ import Dialog from 'primevue/dialog';
 import Select from 'primevue/select';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
+import InputNumber from 'primevue/inputnumber';
+import Toast from 'primevue/toast';
+import DatePicker from 'primevue/datepicker';
 
 const blue = definePreset(Aura, {
     semantic: {
@@ -91,5 +95,8 @@ app.component('pv-dialog', Dialog);
 app.component('pv-select', Select);
 app.component('pv-datatable', DataTable);
 app.component('pv-column', Column);
-
+app.component('pv-input-number', InputNumber);
+app.component('pv-toast', Toast);
+app.component('pv-datepicker', DatePicker);
+app.use(ToastService);
 app.mount('#app');

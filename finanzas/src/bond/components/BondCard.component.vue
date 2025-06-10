@@ -28,6 +28,7 @@ const viewBond = (id: number) => {
     </template>
     <template #content>
       <p><strong>Valor nominal:</strong> {{ formatCurrency(bond.amount, currency) }}</p>
+      <p><strong>Valor de mercado:</strong> {{ formatCurrency(bond.marketValue, currency) }}</p>
       <p><strong>Plazo:</strong> {{ bond.duration }} años</p>
     </template>
     <template #footer>
