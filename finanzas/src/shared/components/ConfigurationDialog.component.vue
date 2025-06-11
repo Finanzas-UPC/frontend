@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
+import { getCapitalizationLabel} from "../utils/capitalization.ts";
+import {interestTypeOptions, capitalizationOptions} from "../utils/options.ts";
 
 const store = useStore();
 const props = defineProps({
@@ -15,29 +17,9 @@ const dialogVisible = computed({
   set: (val: boolean) => emit('update:visible', val),
 });
 
-const getCapitalizationLabel = (days: number): string => {
-  const map: Record<number, string> = {
-    1: 'Diaria',
-    15: 'Quincenal',
-    30: 'Mensual',
-    60: 'Bimestral',
-    90: 'Trimestral',
-    120: 'Cuatrimestral',
-    180: 'Semestral',
-    360: 'Anual',
-    0: 'No aplica'
-  };
-  return map[days] ?? 'Mensual';
-};
-
 const currency = ref(store.getters.getCurrency);
 const interestRateType = ref(store.getters.getInterestRateType);
 const selectedCapitalization = ref(getCapitalizationLabel(store.getters.getCapitalization));
-
-const capitalizationOptions = [
-  'Diaria', 'Quincenal', 'Mensual', 'Bimestral', 'Trimestral',
-  'Cuatrimestral', 'Semestral', 'Anual'
-];
 
 const handleSave = () => {
   store.dispatch('updateCurrency', currency.value);
@@ -70,7 +52,7 @@ const closeDialog = () => {
       <div class="flex items-center mb-4">
         <pv-ifta-label style="margin: 0 auto; width: 80%;">
           <pv-select v-model="interestRateType"
-                     :options="['Nominal', 'Efectiva']"
+                     :options="interestTypeOptions"
                      class="w-full mb-3" />
           <label for="interestRateType" class="font-semibold w-24">Tipo de tasa de interés</label>
         </pv-ifta-label>

@@ -9,12 +9,25 @@ const store = useStore();
 const currency = computed(() => store.getters.getCurrency);
 const router = useRouter();
 
-defineProps<{
+const props = defineProps<{
   bond: Bond;
+}>();
+
+const emit = defineEmits<{
+  (e: 'edit', bond: Bond): void;
+  (e: 'delete', bondId: number): void;
 }>();
 
 const viewBond = (id: number) => {
   router.push(`/bond/details/${id}`);
+};
+
+const handleEdit = () => {
+  emit('edit', props.bond);
+};
+
+const handleDelete = () => {
+  emit('delete', Number(props.bond.id));
 };
 </script>
 
@@ -33,8 +46,9 @@ const viewBond = (id: number) => {
     </template>
     <template #footer>
       <div class="flex gap-3">
-        <pv-button class="flex-1" label="Ver" @click="bond.id !== undefined && viewBond(bond.id)"></pv-button>
-        <pv-button class="flex-1" variant="text" label="Editar" @click=""></pv-button>
+        <pv-button class="flex-1" icon="pi pi-search" severity="info" variant="text" label="Ver" @click="bond.id !== undefined && viewBond(bond.id)"/>
+        <pv-button class="flex-1" icon="pi pi-pencil" severity="secondary" variant="text" label="Editar" @click="handleEdit"/>
+        <pv-button class="flex-1" icon="pi pi-trash" severity="danger" variant="text" label="Eliminar" @click="handleDelete"/>
       </div>
     </template>
   </pv-card>

@@ -3,69 +3,64 @@ import dayjs from 'dayjs';
 import {computed, ref, watch} from 'vue';
 import type { Bond } from "../models/bond.entity.ts";
 import { useStore } from "vuex";
-import { getCapitalizationLabel} from "../../shared/utils/capitalization.ts";
+import {
+  getCapitalizationDays,
+  getCapitalizationLabel
+} from "../../shared/utils/capitalization.ts";
+import {formatText} from "../../shared/utils/textFormatter.ts";
 import {capitalizationOptions, graceTypeOptions, interestTypeOptions} from "../../shared/utils/options.ts";
 
 const store = useStore();
-const userId = Number(store.getters.getUserId);
-const interestRateType = computed(() => store.getters.getInterestRateType);
-const capitalization = computed(() => store.getters.getCapitalization);
 const currency = computed(() => store.getters.getCurrency);
 
 const props = defineProps({
   visible: {
     type: Boolean,
     required: true,
+  },
+  bond: {
+    type: Object as () => Bond,
+    required: true
   }
 });
 
 const emit = defineEmits(['update:visible', 'save']);
 
-const name = ref("");
-const amount = ref(0);
-const marketValue = ref(0);
-const duration = ref(0);
-const frequency = ref(0);
-const interestRate = ref(0);
-const gracePeriodType = ref(""); // TOTAL, PARCIAL, NINGUNO
-const gracePeriodDuration = ref(0);
-const marketRate = ref(0);
-const emissionDate = ref(""); // DD-MM-YYYY format
-
 const localVisible = ref(props.visible);
+
+const name = ref(props.bond.name);
+const amount = ref(props.bond.amount);
+const marketValue = ref(props.bond.marketValue);
+const duration = ref(props.bond.duration);
+const frequency = ref(props.bond.frequency);
+const interestType = ref(formatText(props.bond.interestType));
+const interestRate = ref(props.bond.interestRate);
+const capitalization = ref(getCapitalizationLabel(props.bond.capitalization));
+const gracePeriodType = ref(formatText(props.bond.gracePeriodType));
+const gracePeriodDuration = ref(props.bond.gracePeriodDuration);
+const marketRate = ref(props.bond.marketRate);
+const emissionDate = ref(props.bond.emissionDate);
 
 watch(() => props.visible, (val) => {
   localVisible.value = val;
 });
+
 watch(localVisible, (val) => {
   emit('update:visible', val);
-  if (!val) {
-    name.value = "";
-    amount.value = 0;
-    marketValue.value = 0;
-    duration.value = 0;
-    frequency.value = 1;
-    interestRate.value = 0;
-    gracePeriodType.value = "";
-    gracePeriodDuration.value = 0;
-    marketRate.value = 0;
-    emissionDate.value = "";
-  }
 });
 
 const closeDialog = () => {
   localVisible.value = false;
 };
 
-const handleSave = () => {
+const handleUpdate = () => {
   if (!name.value || amount.value <= 0 || duration.value <= 0 || frequency.value <= 0 || marketRate.value <= 0) {
     alert('Completa todos los campos correctamente.');
     return;
   }
 
-  const bond: Bond = {
-    id: 0,
-    userId,
+  const updatedBond: Bond = {
+    ...props.bond,
     name: name.value,
     amount: amount.value,
     marketValue: marketValue.value,
@@ -74,13 +69,13 @@ const handleSave = () => {
     gracePeriodType: gracePeriodType.value,
     gracePeriodDuration: gracePeriodDuration.value,
     marketRate: marketRate.value,
-    emissionDate: dayjs(emissionDate.value).format('DD-MM-YYYY'),
-    interestType: interestRateType.value,
+    emissionDate: dayjs(emissionDate.value).isValid() ? dayjs(emissionDate.value).format('YYYY-MM-DD') : emissionDate.value,
+    interestType: interestType.value,
     interestRate: interestRate.value,
-    capitalization: capitalization.value,
+    capitalization: getCapitalizationDays(capitalization.value)
   };
 
-  emit('save', bond);
+  emit('save', updatedBond);
   closeDialog();
 };
 </script>
@@ -89,8 +84,8 @@ const handleSave = () => {
   <pv-dialog v-model:visible="localVisible" modal :style="{ width: '30rem' }">
     <template #header>
       <div class="flex flex-column">
-        <h5 class="m-1">Añadir bono</h5>
-        <span class="m-1">Información sobre el bono</span>
+        <h5 class="m-1">Editar bono</h5>
+        <span class="m-1">Modificar los datos del bono</span>
       </div>
     </template>
 
@@ -131,8 +126,8 @@ const handleSave = () => {
 
     <div class="mb-3">
       <pv-ifta-label style="width: 100%">
-        <pv-input-text :model-value="interestRateType" :options="interestTypeOptions" disabled style="width: 100%" />
-        <label class="font-semibold w-24">Tipo de tasa de interés</label>
+        <pv-select v-model="interestType" :options="interestTypeOptions" style="width: 100%" />
+        <label for="interestType" class="font-semibold w-24">Tipo de tasa de interés</label>
       </pv-ifta-label>
     </div>
 
@@ -144,11 +139,12 @@ const handleSave = () => {
     </div>
 
     <div class="mb-3">
-      <pv-ifta-label style="width: 100%">
-        <pv-input-text :model-value="getCapitalizationLabel(capitalization)"
-                       :options="interestRateType === 'Efectiva' ? ['No aplica'] : capitalizationOptions"
-                       disabled style="width: 100%" />
-        <label class="font-semibold w-24">Capitalización</label>
+      <pv-ifta-label style="width: 100%;">
+        <pv-select v-model="capitalization" :options="interestType === 'Efectiva' ? ['No aplica'] : capitalizationOptions"
+                   :disabled="interestType === 'Efectiva'"
+                   style="width: 100%;"
+        />
+        <label for="capitalization" class="font-semibold w-24">Capitalización</label>
       </pv-ifta-label>
     </div>
 
@@ -182,8 +178,8 @@ const handleSave = () => {
 
     <template #footer>
       <div class="flex flex-row gap-4 w-full justify-content-center">
-        <pv-button label="Añadir" style="width: 6rem" @click="handleSave" />
-        <pv-button label="Cancelar" severity="danger" variant="text" @click="closeDialog" />
+        <pv-button label="Actualizar" style="width: 6rem" @click="handleUpdate" />
+        <pv-button label="Cancelar" severity="secondary" variant="text" @click="closeDialog" />
       </div>
     </template>
   </pv-dialog>
