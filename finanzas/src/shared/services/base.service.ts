@@ -1,6 +1,6 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from "axios";
 
-const BASE_API_URL = "http://localhost:8080/api/v1";
+const BASE_API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
 
 export class BaseService<T = any> {
     private readonly endpoint: string;
