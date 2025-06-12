@@ -5,4 +5,4 @@ export const capitalizationOptions: string[] = [
     'Cuatrimestral', 'Semestral', 'Anual'
 ];
 
-export const graceTypeOptions: string[] = ['Niguno', 'Total', 'Parcial'];
+export const graceTypeOptions: string[] = ['Ninguno', 'Total', 'Parcial'];
