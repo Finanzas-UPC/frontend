@@ -165,7 +165,7 @@ const handleUpdate = () => {
     <div class="mb-3">
       <pv-ifta-label style="width: 100%">
         <pv-input-number v-model="marketRate" locale="en-US" :min="0" input-id="marketRate" :minFractionDigits="0" :maxFractionDigits="4" style="width: 100%" />
-        <label for="marketRate" class="font-semibold w-24">Tasa de mercado (%)</label>
+        <label for="marketRate" class="font-semibold w-24">Tasa de descuento (%)</label>
       </pv-ifta-label>
     </div>
 
