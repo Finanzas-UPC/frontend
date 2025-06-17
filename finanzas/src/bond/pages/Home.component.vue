@@ -52,6 +52,7 @@ const updateBond = async (bond: Bond) => {
       bonds.value[index] = bond;
     }
     showEditDialog.value = false;
+    selectedBond.value = null;
     toast.add({ severity: 'success', summary: 'Éxito', detail: 'Bono actualizado.', life: 3000 });
   } catch {
     toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo actualizar el bono.', life: 3000 });
