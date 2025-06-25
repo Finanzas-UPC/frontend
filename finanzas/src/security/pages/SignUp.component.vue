@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import {AuthenticationService} from "../services/authentication.service.ts";
+import { AuthenticationService } from "../services/authentication.service.ts";
 
 const username = ref<string>('');
 const password = ref<string>('');
 const confirmPassword = ref<string>('');
+const selectedRole = ref<string>('');
 const error = ref<string>('');
 
 const authenticationService = new AuthenticationService();
@@ -14,7 +15,7 @@ const router = useRouter();
 const register = async () => {
   error.value = '';
 
-  if (!username.value || !password.value || !confirmPassword.value) {
+  if (!username.value || !password.value || !confirmPassword.value || !selectedRole.value) {
     error.value = 'Todos los campos son obligatorios';
     return;
   }
@@ -25,7 +26,7 @@ const register = async () => {
   }
 
   try {
-    await authenticationService.signUp(username.value, password.value);
+    await authenticationService.signUp(username.value, password.value, selectedRole.value);
     await router.push('/home');
   } catch (err) {
     error.value = 'Error al registrar. Inténtalo nuevamente';
@@ -69,6 +70,20 @@ const register = async () => {
               </pv-icon-field>
               <label>Confirmar Contraseña</label>
             </pv-ifta-label>
+
+            <div class="role-selection">
+              <label class="role-label">Selecciona tu rol:</label>
+              <div class="role-options">
+                <div>
+                  <input type="radio" id="bondholder" value="ROLE_BONDHOLDER" v-model="selectedRole" />
+                  <label for="bondholder">Bonista</label>
+                </div>
+                <div>
+                  <input type="radio" id="bondIssuer" value="ROLE_BOND_ISSUER" v-model="selectedRole" />
+                  <label for="bondIssuer">Emisor</label>
+                </div>
+              </div>
+            </div>
 
             <pv-button @click="register" label="Registrarse" style="margin: 0 auto; width: 60%;" />
             <router-link to="/login"
@@ -129,6 +144,24 @@ p {
 
 a {
   text-align: center;
+}
+
+.role-selection {
+  margin: 0 auto;
+  width: 80%;
+  text-align: center;
+}
+
+.role-label {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.role-options {
+  display: flex;
+  justify-content: center;
+  gap: 7rem;
+  align-items: center;
 }
 
 @media (max-width: 768px) {

@@ -7,11 +7,11 @@ export class AuthenticationService extends BaseService {
         super("authentication");
     }
 
-    signUp(username: string, password: string): Promise<AxiosResponse> {
+    signUp(username: string, password: string, selectedRole: string): Promise<AxiosResponse> {
         const user: SignUpRequest = {
             username,
             password,
-            roles: ["ROLE_USER"]
+            roles: ["ROLE_USER", selectedRole]
         };
         return axios.post(`${this.endpointPath()}/sign-up`, user);
     }
