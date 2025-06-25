@@ -2,12 +2,15 @@
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { bondService } from '../services/bond.service.ts';
-import type { BondMetrics } from '../models/bondmetrics.entity.ts';
-import type { CashFlowItem } from '../models/cashflow.entity.ts';
+import { UserService } from '../../shared/services/user.service.ts';
 
 const route = useRoute();
-const metrics = ref<BondMetrics | null>(null);
-const cashflow = ref<CashFlowItem[]>([]);
+const metrics = ref(null);
+const cashflow = ref([]);
+const roles = ref([]);
+const isBondIssuer = ref(false);
+
+const userService = new UserService();
 
 const loadMetrics = async () => {
   const bondId = Number(route.params.id);
@@ -25,9 +28,29 @@ const loadCashFlow = async () => {
   }
 };
 
-onMounted(() => {
-  loadMetrics();
-  loadCashFlow();
+const checkBondIssuerRole = async () => {
+  const userId = Number(localStorage.getItem('userId'));
+  if (!isNaN(userId)) {
+    try {
+      const res = await userService.getUserDetails(userId);
+      roles.value = res.data.roles || [];
+      isBondIssuer.value = roles.value.includes('ROLE_BOND_ISSUER');
+    } catch (error) {
+      console.error("Failed to fetch user details:", error);
+      roles.value = [];
+      isBondIssuer.value = false;
+    }
+  } else {
+    console.warn("Invalid userId in localStorage");
+    roles.value = [];
+    isBondIssuer.value = false;
+  }
+};
+
+onMounted(async () => {
+  await checkBondIssuerRole();
+  await loadMetrics();
+  await loadCashFlow();
 });
 </script>
 
@@ -47,11 +70,11 @@ onMounted(() => {
         <p class="label">Duración modificada</p>
         <p class="value">{{ metrics.modifiedDuration }}</p>
       </div>
-      <div class="metric-card">
+      <div class="metric-card" v-if="isBondIssuer">
         <p class="label">TCEA</p>
         <p class="value">{{ metrics.tcea * 100 }} %</p>
       </div>
-      <div class="metric-card">
+      <div class="metric-card" v-if="!isBondIssuer">
         <p class="label">TREA</p>
         <p class="value">{{ metrics.trea * 100 }} %</p>
       </div>
@@ -77,8 +100,8 @@ onMounted(() => {
       <pv-column field="amortization" header="Amortización" />
       <pv-column field="finalBalance" header="Saldo Final" />
       <pv-column field="totalPayment" header="Cuota" />
-      <pv-column field="issuerCashFlow" header="Flujo Emisor" />
-      <pv-column field="bondHolderCashFlow" header="Flujo Bonista" />
+      <pv-column v-if="isBondIssuer" field="issuerCashFlow" header="Flujo Emisor" />
+      <pv-column v-if="!isBondIssuer" field="bondHolderCashFlow" header="Flujo Bonista" />
     </pv-datatable>
 
   </div>
