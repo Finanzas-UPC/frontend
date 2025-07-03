@@ -3,11 +3,13 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { bondService } from '../services/bond.service.ts';
 import { UserService } from '../../shared/services/user.service.ts';
+import type {BondMetrics} from "../models/bondmetrics.entity.ts";
+import type {CashFlowItem} from "../models/cashflow.entity.ts";
 
 const route = useRoute();
-const metrics = ref(null);
-const cashflow = ref([]);
-const roles = ref([]);
+const metrics = ref<BondMetrics | null>(null);
+const cashflow = ref<CashFlowItem[]>([]);
+const roles = ref<string[]>([]);
 const isBondIssuer = ref(false);
 
 const userService = new UserService();
@@ -58,15 +60,15 @@ onMounted(async () => {
   <h2>Detalles del bono</h2>
   <div class="metrics-wrapper" v-if="metrics">
     <div class="metrics-container">
-      <div class="metric-card">
+      <div class="metric-card" v-if="!isBondIssuer">
         <p class="label">Duración</p>
         <p class="value">{{ metrics.duration }}</p>
       </div>
       <div class="metric-card">
-        <p class="label">Convexidad</p>
+        <p class="label" v-if="!isBondIssuer">Convexidad</p>
         <p class="value">{{ metrics.convexity }}</p>
       </div>
-      <div class="metric-card">
+      <div class="metric-card" v-if="!isBondIssuer">
         <p class="label">Duración modificada</p>
         <p class="value">{{ metrics.modifiedDuration }}</p>
       </div>

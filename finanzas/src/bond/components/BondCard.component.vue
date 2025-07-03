@@ -40,7 +40,7 @@ const handleDelete = () => {
       <p class="text-center m-0 p-0">{{ bond.emissionDate }}</p>
     </template>
     <template #content>
-      <p><strong>Valor nominal:</strong> {{ formatCurrency(bond.amount, currency) }}</p>
+      <p><strong>Valor nominal:</strong> {{ formatCurrency(bond.nominalValue, currency) }}</p>
       <p><strong>Valor de mercado:</strong> {{ formatCurrency(bond.marketValue, currency) }}</p>
       <p><strong>Plazo:</strong> {{ bond.duration }} años</p>
     </template>

@@ -40,7 +40,7 @@ const register = async () => {
       <img src="/assets/images/logo.png" style="width: 350px; height: 350px;" alt="software logo" />
     </div>
     <div class="right">
-      <pv-card class="signup-card" style="width: 550px; height: 620px;">
+      <pv-card class="signup-card" style="width: 550px; height: 690px;">
         <template #title>
           <h3>Crear cuenta</h3>
           <p v-if="error">{{ error }}</p>

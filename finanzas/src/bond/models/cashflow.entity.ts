@@ -11,11 +11,6 @@ export interface CashFlowItem {
     amortization: number;
     finalBalance: number;
     totalPayment: number;
-
-    // Valores para métricas
     issuerCashFlow: number;
     bondHolderCashFlow: number;
-    discountedFlow: number;
-    discountedFlowTimesPeriod: number;
-    convexityFactor: number;
 }
