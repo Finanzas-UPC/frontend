@@ -1,4 +1,4 @@
-export const interestTypeOptions: string[] = ['Nominal', 'Efectiva'];
+export const interestTypeOptions: string[] = ['NOMINAL', 'EFECTIVA'];
 
 export const frequencyOptions: string[] = [
     'Diaria', 'Semanal', 'Quincenal', 'Mensual', 'Bimestral',
@@ -10,6 +10,6 @@ export const capitalizationOptions: string[] = [
     'Cuatrimestral', 'Semestral', 'Anual'
 ];
 
-export const graceTypeOptions: string[] = ['Ninguno', 'Total', 'Parcial'];
+export const graceTypeOptions: string[] = ['NINGUNO', 'TOTAL', 'PARCIAL'];
 
 export const currencyOptions: string[] = ['USD', 'EUR', 'PEN' ];

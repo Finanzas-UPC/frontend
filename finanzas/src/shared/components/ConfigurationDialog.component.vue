@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useStore } from 'vuex';
-import { getCapitalizationLabel} from "../utils/capitalization.ts";
-import {interestTypeOptions, capitalizationOptions} from "../utils/options.ts";
+import { getCapitalizationLabel } from "../utils/capitalization.ts";
+import { interestTypeOptions, capitalizationOptions } from "../utils/options.ts";
 
 const store = useStore();
 const props = defineProps({
@@ -17,9 +17,24 @@ const dialogVisible = computed({
   set: (val: boolean) => emit('update:visible', val),
 });
 
-const currency = ref(store.getters.getCurrency);
-const interestRateType = ref(store.getters.getInterestRateType);
-const selectedCapitalization = ref(getCapitalizationLabel(store.getters.getCapitalization));
+// Referencias para los valores del formulario
+const currency = ref('');
+const interestRateType = ref('');
+const selectedCapitalization = ref('');
+
+// Función para cargar los valores del store
+const loadValues = () => {
+  currency.value = store.getters.getCurrency;
+  interestRateType.value = store.getters.getInterestRateType;
+  selectedCapitalization.value = getCapitalizationLabel(store.getters.getCapitalization);
+};
+
+// Observa cuando el diálogo se abre y carga los valores
+watch(dialogVisible, (newVal) => {
+  if (newVal) {
+    loadValues();
+  }
+});
 
 const handleSave = () => {
   store.dispatch('updateCurrency', currency.value);
@@ -60,9 +75,9 @@ const closeDialog = () => {
       <div class="flex items-center mb-4">
         <pv-ifta-label style="margin: 0 auto; width: 80%;">
           <pv-select v-model="selectedCapitalization"
-                     :options="interestRateType === 'Efectiva' ? ['No aplica'] : capitalizationOptions"
+                     :options="interestRateType === 'EFECTIVA' ? ['NO APLICA'] : capitalizationOptions"
                      class="w-full mb-3"
-                     :disabled="interestRateType === 'Efectiva'"
+                     :disabled="interestRateType === 'EFECTIVA'"
           />
           <label for="capitalization" class="font-semibold w-24">Capitalización</label>
         </pv-ifta-label>

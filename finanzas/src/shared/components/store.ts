@@ -44,18 +44,24 @@ export default createStore<State>({
                 ? localStorage.setItem('userId', userId)
                 : localStorage.removeItem('userId');
         },
-        setCurrency(state: State, currency: string) {
+        setCurrency(state: State, currency: string | null) {
             state.currency = currency;
-            localStorage.setItem('currency', currency);
+            currency
+                ? localStorage.setItem('currency', currency)
+                : localStorage.removeItem('currency');
         },
-        setInterestRateType(state: State, rateType: string) {
+        setInterestRateType(state: State, rateType: string | null) {
             state.interestRateType = rateType;
-            localStorage.setItem('interestRateType', rateType);
+            rateType
+                ? localStorage.setItem('interestRateType', rateType)
+                : localStorage.removeItem('interestRateType');
         },
-        setCapitalization(state: State, cap: string) {
+        setCapitalization(state: State, cap: string | null) {
             const days = CAPITALIZATION_MAP[cap] ?? 30;
             state.capitalization = days;
-            localStorage.setItem('capitalization', days.toString());
+            cap
+                ? localStorage.setItem('capitalization', days.toString())
+                : localStorage.removeItem('capitalization');
         },
     },
     actions: {
@@ -66,6 +72,9 @@ export default createStore<State>({
         logout({ commit }: ActionContext<State, State>) {
             commit('setToken', null);
             commit('setUserId', null);
+            commit('setCurrency', null);
+            commit('setInterestRateType', null);
+            commit('setCapitalization', null);
         },
         updateCurrency({ commit }: ActionContext<State, State>, currency: string) {
             commit('setCurrency', currency);
