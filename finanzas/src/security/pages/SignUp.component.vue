@@ -2,20 +2,31 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { AuthenticationService } from "../services/authentication.service.ts";
+import { useToast } from "primevue/usetoast";
+
 
 const username = ref<string>('');
 const password = ref<string>('');
 const confirmPassword = ref<string>('');
 const selectedRole = ref<string>('');
 const error = ref<string>('');
+const errorSelect = ref<string>('');
 
 const authenticationService = new AuthenticationService();
 const router = useRouter();
 
+const options = [
+    'Emisor',
+    'Bonista'
+];
+
+const toast = useToast();
+
+
 const register = async () => {
   error.value = '';
 
-  if (!username.value || !password.value || !confirmPassword.value || !selectedRole.value) {
+  if (!username.value || !password.value || !confirmPassword.value) {
     error.value = 'Todos los campos son obligatorios';
     return;
   }
@@ -25,9 +36,34 @@ const register = async () => {
     return;
   }
 
+  if (selectedRole.value === '') {
+    error.value = 'Debes seleccionar un rol';
+    return;
+  }
+  switch(selectedRole.value) {
+    case 'Emisor':
+      selectedRole.value = 'ROLE_BOND_ISSUER';
+      break;
+    case 'Bonista':
+      selectedRole.value = 'ROLE_BONDHOLDER';
+      break;
+  }
+
   try {
-    await authenticationService.signUp(username.value, password.value, selectedRole.value);
-    await router.push('/home');
+    const response = await authenticationService.signUp(username.value, password.value, selectedRole.value);
+    if (response.status === 201) {
+      // Muestra el toast
+      toast.add({
+        severity: 'success',
+        summary: 'Registro exitoso',
+        detail: 'Te estamos redirigiendo a iniciar sesión.',
+        life: 2000
+      });
+
+      setTimeout(() => {
+        router.push('/home');
+      }, 2000);
+    }
   } catch (err) {
     error.value = 'Error al registrar. Inténtalo nuevamente';
   }
@@ -35,6 +71,7 @@ const register = async () => {
 </script>
 
 <template>
+  <pv-toast />
   <div class="container">
     <div class="left">
       <img src="/assets/images/logo.png" style="width: 350px; height: 350px;" alt="software logo" />
@@ -72,19 +109,13 @@ const register = async () => {
             </pv-ifta-label>
 
             <div class="role-selection">
-              <label class="role-label">Selecciona tu rol:</label>
+              <label class="role-label">Selecciona tu rol</label>
               <div class="role-options">
-                <div>
-                  <input type="radio" id="bondholder" value="ROLE_BONDHOLDER" v-model="selectedRole" />
-                  <label for="bondholder">Bonista</label>
-                </div>
-                <div>
-                  <input type="radio" id="bondIssuer" value="ROLE_BOND_ISSUER" v-model="selectedRole" />
-                  <label for="bondIssuer">Emisor</label>
+                <div class="flex flex-col gap-1">
+                  <pv-select-button name="selection" :options="options" v-model="selectedRole" />
                 </div>
               </div>
             </div>
-
             <pv-button @click="register" label="Registrarse" style="margin: 0 auto; width: 60%;" />
             <router-link to="/login"
                          style="text-decoration: none; color:var(--text-color);">
