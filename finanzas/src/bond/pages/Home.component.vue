@@ -18,19 +18,6 @@ const toast = useToast();
 const loadBonds = async () => {
   const res = await bondService.getByUserId(Number(store.getters.getUserId));
   bonds.value = res.data;
-  // load currency
-  const currency = bonds.value.at(0)?.currency || 'PEN';
-  await store.dispatch('updateCurrency', currency);
-  // load interest rate type
-  const interestType = bonds.value.at(0)?.interestType || 'NOMINAL';
-  await store.dispatch('updateInterestRateType', interestType);
-  if (interestType == 'NOMINAL') {
-    // load capitalization
-    const capitalization = bonds.value.at(0)?.capitalization || 30;
-    await store.dispatch('updateCapitalization', capitalization);
-  } else {
-    await store.dispatch('updateCapitalization', 0);
-  }
 };
 
 const openAddBondDialog = () => {

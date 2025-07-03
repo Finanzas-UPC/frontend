@@ -33,6 +33,7 @@ const logout = () => {
   store.dispatch('logout').then(() => {
     nextTick(() => {
       router.push('/login');
+      window.location.reload();
     })
   })
 }

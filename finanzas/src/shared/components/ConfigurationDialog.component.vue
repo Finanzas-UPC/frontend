@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { useStore } from 'vuex';
-import { getCapitalizationLabel } from "../utils/capitalization.ts";
+import { getCapitalizationDays, getCapitalizationLabel } from "../utils/capitalization.ts";
 import { interestTypeOptions, capitalizationOptions } from "../utils/options.ts";
+import { configurationService } from "../services/configuration.service.ts";
+import type { Configuration } from "../models/configuration.entity.ts";
 
 const store = useStore();
 const props = defineProps({
@@ -17,34 +19,78 @@ const dialogVisible = computed({
   set: (val: boolean) => emit('update:visible', val),
 });
 
-// Referencias para los valores del formulario
+let configuration: Configuration = {
+  id: 0,
+  userId: store.getters.getUserId,
+  currency: '',
+  interestType: '',
+  capitalization: '',
+};
+
+// Reactive references for form values
 const currency = ref('');
 const interestRateType = ref('');
 const selectedCapitalization = ref('');
 
-// Función para cargar los valores del store
+// Function to fetch and load configuration values
 const loadValues = () => {
-  currency.value = store.getters.getCurrency;
-  interestRateType.value = store.getters.getInterestRateType;
-  selectedCapitalization.value = getCapitalizationLabel(store.getters.getCapitalization);
+  const userId = store.getters.getUserId;
+  if (!userId) return;
+
+  configurationService.getByUserId(userId)
+      .then(response => {
+        if (response.data) {
+          configuration = response.data;
+          currency.value = response.data.currency || '';
+          interestRateType.value = response.data.interestType || '';
+          selectedCapitalization.value = getCapitalizationLabel(response.data.capitalization) || '';
+        }
+      })
+      .catch(error => {
+        console.error('Error al cargar la configuración:', error);
+      });
 };
 
-// Observa cuando el diálogo se abre y carga los valores
+// Watch for dialog visibility and load configuration when opened
 watch(dialogVisible, (newVal) => {
   if (newVal) {
     loadValues();
   }
 });
 
+// Watch for changes in the logged-in user and reload configuration
+watch(() => store.getters.getUserId, () => {
+  loadValues();
+});
+
+// Save updated configuration
 const handleSave = () => {
-  store.dispatch('updateCurrency', currency.value);
-  store.dispatch('updateInterestRateType', interestRateType.value);
-  store.dispatch('updateCapitalization', selectedCapitalization.value);
-  closeDialog();
+  const updatedConfig: Configuration = {
+    ...configuration,
+    currency: currency.value,
+    interestType: interestRateType.value,
+    capitalization: getCapitalizationDays(selectedCapitalization.value),
+  };
+
+  configurationService.update(configuration.id, updatedConfig)
+      .then(() => {
+        configuration.currency = currency.value;
+        configuration.interestType = interestRateType.value;
+        configuration.capitalization = getCapitalizationDays(selectedCapitalization.value);
+        reloadPage();
+        closeDialog();
+      })
+      .catch(error => {
+        console.error('Error al actualizar la configuración:', error);
+      });
 };
 
 const closeDialog = () => {
   dialogVisible.value = false;
+};
+
+const reloadPage = () => {
+  window.location.reload();
 };
 </script>
 
@@ -93,5 +139,4 @@ const closeDialog = () => {
 </template>
 
 <style scoped>
-
 </style>
