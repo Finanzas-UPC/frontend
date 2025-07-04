@@ -26,9 +26,9 @@ export default createStore<State>({
         token: localStorage.getItem('token'),
         userId: localStorage.getItem('userId'),
         isAuthenticated: !!localStorage.getItem('token'),
-        currency: localStorage.getItem('currency') || 'PEN',
-        interestRateType: localStorage.getItem('interestRateType') || 'Nominal',
-        capitalization: parseInt(localStorage.getItem('capitalization') || '30'), // Mensual por defecto
+        currency: localStorage.getItem('currency') ?? 'PEN',
+        interestRateType: localStorage.getItem('interestRateType') ?? 'Nominal',
+        capitalization: parseInt(localStorage.getItem('capitalization') ?? '30')
     },
     mutations: {
         setToken(state: State, token: string | null) {
@@ -45,23 +45,20 @@ export default createStore<State>({
                 : localStorage.removeItem('userId');
         },
         setCurrency(state: State, currency: string | null) {
-            state.currency = currency;
-            currency
-                ? localStorage.setItem('currency', currency)
-                : localStorage.removeItem('currency');
+            const value = currency ?? 'PEN';
+            state.currency = value;
+            localStorage.setItem('currency', value);
         },
         setInterestRateType(state: State, rateType: string | null) {
-            state.interestRateType = rateType;
-            rateType
-                ? localStorage.setItem('interestRateType', rateType)
-                : localStorage.removeItem('interestRateType');
+            const value = rateType ?? 'Nominal';
+            state.interestRateType = value;
+            localStorage.setItem('interestRateType', value);
         },
         setCapitalization(state: State, cap: string | null) {
-            const days = CAPITALIZATION_MAP[cap] ?? 30;
+            const validCap = cap ?? 'Mensual';
+            const days = CAPITALIZATION_MAP[validCap] ?? 30;
             state.capitalization = days;
-            cap
-                ? localStorage.setItem('capitalization', days.toString())
-                : localStorage.removeItem('capitalization');
+            localStorage.setItem('capitalization', days.toString());
         },
     },
     actions: {

@@ -6,7 +6,6 @@ import {
   getCapitalizationDays,
   getCapitalizationLabel
 } from "../../shared/utils/capitalization.ts";
-import {formatText} from "../../shared/utils/textFormatter.ts";
 import {
   capitalizationOptions,
   currencyOptions, frequencyOptions,

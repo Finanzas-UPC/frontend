@@ -21,10 +21,10 @@ const dialogVisible = computed({
 
 let configuration: Configuration = {
   id: 0,
-  userId: store.getters.getUserId,
+  userId: parseInt(store.getters.getUserId ?? '0'),
   currency: '',
   interestType: '',
-  capitalization: '',
+  capitalization: 30,
 };
 
 // Reactive references for form values
@@ -41,9 +41,9 @@ const loadValues = () => {
       .then(response => {
         if (response.data) {
           configuration = response.data;
-          currency.value = response.data.currency || '';
-          interestRateType.value = response.data.interestType || '';
-          selectedCapitalization.value = getCapitalizationLabel(response.data.capitalization) || '';
+          currency.value = response.data.currency ?? '';
+          interestRateType.value = response.data.interestType ?? '';
+          selectedCapitalization.value = getCapitalizationLabel(response.data.capitalization) ?? '';
           store.dispatch('updateCurrency', response.data.currency);
           store.dispatch('updateInterestRateType', response.data.interestType);
           store.dispatch('updateCapitalization', getCapitalizationLabel(response.data.capitalization));
@@ -74,6 +74,11 @@ const handleSave = () => {
     interestType: interestRateType.value,
     capitalization: getCapitalizationDays(selectedCapitalization.value),
   };
+
+  if (!configuration.id) {
+    console.error('No configuration ID found. Cannot update.');
+    return;
+  }
 
   configurationService.update(configuration.id, updatedConfig)
       .then((response) => {
