@@ -10,7 +10,6 @@ const password = ref<string>('');
 const confirmPassword = ref<string>('');
 const selectedRole = ref<string>('');
 const error = ref<string>('');
-const errorSelect = ref<string>('');
 
 const authenticationService = new AuthenticationService();
 const router = useRouter();

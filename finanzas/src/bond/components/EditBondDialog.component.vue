@@ -34,10 +34,10 @@ const nominalValue = ref(props.bond.nominalValue);
 const marketValue = ref(props.bond.marketValue);
 const duration = ref(props.bond.duration);
 const frequency = ref(getFrequencyLabel(props.bond.frequency));
-const interestType = ref(formatText(props.bond.interestType));
+const interestType = ref(props.bond.interestType);
 const interestRate = ref(props.bond.interestRate);
 const capitalization = ref(getCapitalizationLabel(props.bond.capitalization));
-const gracePeriodType = ref(formatText(props.bond.gracePeriodType));
+const gracePeriodType = ref(props.bond.gracePeriodType);
 const gracePeriodDuration = ref(props.bond.gracePeriodDuration);
 const discountRate = ref(props.bond.discountRate);
 const emissionDate = ref(props.bond.emissionDate);
@@ -149,8 +149,8 @@ closeDialog();
     <div class="mb-3">
       <pv-ifta-label style="width: 100%;">
         <pv-select v-model="capitalization"
-                   :options="interestType === 'Efectiva' ? ['No aplica'] : capitalizationOptions"
-                   :disabled="interestType === 'Efectiva'"
+                   :options="interestType === 'EFECTIVA' ? ['No aplica'] : capitalizationOptions"
+                   :disabled="interestType === 'EFECTIVA'"
                    style="width: 100%;"
         />
         <label for="capitalization" class="font-semibold w-24">Capitalización</label>
@@ -166,7 +166,7 @@ closeDialog();
 
     <div class="mb-3">
       <pv-ifta-label style="width: 100%">
-        <pv-input-number v-model="gracePeriodDuration" :disabled="gracePeriodType === 'Ninguno'" locale="en-US" :min="0" input-id="gracePeriodDuration" style="width: 100%" />
+        <pv-input-number v-model="gracePeriodDuration" :disabled="gracePeriodType === 'NINGUNO'" locale="en-US" :min="0" input-id="gracePeriodDuration" style="width: 100%" />
         <label for="gracePeriodDuration" class="font-semibold w-24">Duración periodo de gracia</label>
       </pv-ifta-label>
     </div>

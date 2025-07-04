@@ -44,6 +44,9 @@ const loadValues = () => {
           currency.value = response.data.currency || '';
           interestRateType.value = response.data.interestType || '';
           selectedCapitalization.value = getCapitalizationLabel(response.data.capitalization) || '';
+          store.dispatch('updateCurrency', response.data.currency);
+          store.dispatch('updateInterestRateType', response.data.interestType);
+          store.dispatch('updateCapitalization', getCapitalizationLabel(response.data.capitalization));
         }
       })
       .catch(error => {
@@ -73,10 +76,13 @@ const handleSave = () => {
   };
 
   configurationService.update(configuration.id, updatedConfig)
-      .then(() => {
+      .then((response) => {
         configuration.currency = currency.value;
         configuration.interestType = interestRateType.value;
         configuration.capitalization = getCapitalizationDays(selectedCapitalization.value);
+        store.dispatch('updateCurrency', response.data.currency);
+        store.dispatch('updateInterestRateType', response.data.interestType);
+        store.dispatch('updateCapitalization', selectedCapitalization.value);
         reloadPage();
         closeDialog();
       })

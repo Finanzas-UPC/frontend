@@ -49,6 +49,10 @@ const checkBondIssuerRole = async () => {
   }
 };
 
+const goBack = () => {
+  window.history.back();
+}
+
 onMounted(async () => {
   await checkBondIssuerRole();
   await loadMetrics();
@@ -57,15 +61,19 @@ onMounted(async () => {
 </script>
 
 <template>
-  <h2>Detalles del bono</h2>
+  <header class="component-header">
+    <pv-button @click="goBack()" aria-label="Volver"
+               icon="pi pi-arrow-left" severity="secondary" raised/>
+    <h3 class="title">Detalle del bono</h3>
+  </header>
   <div class="metrics-wrapper" v-if="metrics">
     <div class="metrics-container">
       <div class="metric-card" v-if="!isBondIssuer">
         <p class="label">Duración</p>
         <p class="value">{{ metrics.duration }}</p>
       </div>
-      <div class="metric-card">
-        <p class="label" v-if="!isBondIssuer">Convexidad</p>
+      <div class="metric-card" v-if="!isBondIssuer">
+        <p class="label">Convexidad</p>
         <p class="value">{{ metrics.convexity }}</p>
       </div>
       <div class="metric-card" v-if="!isBondIssuer">
@@ -149,5 +157,17 @@ h2, h3 {
 .value {
   font-size: 18px;
   color: #000;
+}
+.component-header{
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 0 2rem 0 2rem;
+  margin: 2rem 0 2rem 0;
+}
+
+.title{
+  margin: 0;
+  text-align: center;
 }
 </style>
