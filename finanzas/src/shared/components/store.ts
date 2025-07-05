@@ -28,7 +28,8 @@ export default createStore<State>({
         isAuthenticated: !!localStorage.getItem('token'),
         currency: localStorage.getItem('currency') ?? 'PEN',
         interestRateType: localStorage.getItem('interestRateType') ?? 'Nominal',
-        capitalization: parseInt(localStorage.getItem('capitalization') ?? '30')
+        capitalization: parseInt(localStorage.getItem('capitalization') ?? '30'),
+        isBondIssuer: localStorage.getItem('isBondIssuer') === 'true'
     },
     mutations: {
         setToken(state: State, token: string | null) {
@@ -60,6 +61,10 @@ export default createStore<State>({
             state.capitalization = days;
             localStorage.setItem('capitalization', days.toString());
         },
+        setIsBondIssuer(state: State, isBondIssuer: boolean) {
+            state.isBondIssuer = isBondIssuer;
+            localStorage.setItem('isBondIssuer', isBondIssuer)
+        }
     },
     actions: {
         login({ commit }: ActionContext<State, State>, payload: { token: string; userId: string }) {
@@ -102,5 +107,8 @@ export default createStore<State>({
         getCapitalization(state: State): number {
             return state.capitalization;
         },
+        getIsBondIssuer(state: State): boolean {
+            return state.isBondIssuer;
+        }
     },
 });

@@ -13,6 +13,7 @@ import {
   interestTypeOptions
 } from "../../shared/utils/options.ts";
 import {getFrequencyLabel, getFrequencyValue} from "../../shared/utils/frecuency.ts";
+import {useStore} from "vuex";
 const props = defineProps({
   visible: {
     type: Boolean,
@@ -25,6 +26,9 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['update:visible', 'save']);
+
+const store = useStore();
+const isBondIssuer = ref(store.getters.getIsBondIssuer);
 
 const localVisible = ref(props.visible);
 
@@ -110,6 +114,13 @@ closeDialog();
 
     <div class="mb-3">
       <pv-ifta-label style="width: 100%">
+        <pv-input-number v-model="nominalValue" locale="en-US" :min="0" input-id="nominalValue" style="width: 100%" />
+        <label for="nominalValue" class="font-semibold w-24">Monto ({{ currency }})</label>
+      </pv-ifta-label>
+    </div>
+
+    <div class="mb-3">
+      <pv-ifta-label style="width: 100%">
         <pv-input-number v-model="marketValue" locale="en-US" :min="0" input-id="marketValue" style="width: 100%" />
         <label for="marketValue" class="font-semibold w-24">Valor de mercado ({{ currency }})</label>
       </pv-ifta-label>
@@ -133,7 +144,7 @@ closeDialog();
 
     <div class="mb-3">
       <pv-ifta-label style="width: 100%">
-        <pv-select v-model="interestType" :options="interestTypeOptions" style="width: 100%" />
+        <pv-select v-model="interestType" :options="interestTypeOptions" style="width: 100%" disabled />
         <label for="interestType" class="font-semibold w-24">Tipo de tasa de interés</label>
       </pv-ifta-label>
     </div>
@@ -149,7 +160,7 @@ closeDialog();
       <pv-ifta-label style="width: 100%;">
         <pv-select v-model="capitalization"
                    :options="interestType === 'EFECTIVA' ? ['No aplica'] : capitalizationOptions"
-                   :disabled="interestType === 'EFECTIVA'"
+                   disabled
                    style="width: 100%;"
         />
         <label for="capitalization" class="font-semibold w-24">Capitalización</label>
@@ -186,7 +197,7 @@ closeDialog();
 
     <div class="mb-3">
       <pv-ifta-label style="width: 100%">
-        <pv-select v-model="currency" :options="currencyOptions" style="width: 100%" />
+        <pv-select v-model="currency" :options="currencyOptions" style="width: 100%" disabled />
         <label for="currency" class="font-semibold w-24">Moneda</label>
       </pv-ifta-label>
     </div>
@@ -199,14 +210,14 @@ closeDialog();
     </div>
 
     <div class="mb-3">
-      <pv-ifta-label style="width: 100%">
+      <pv-ifta-label style="width: 100%" v-if="isBondIssuer">
         <pv-input-number v-model="structuringRate" locale="en-US" :min="0" input-id="structuringRate" :minFractionDigits="0" :maxFractionDigits="4" style="width: 100%" />
         <label for="structuringRate" class="font-semibold w-24">Tasa de estructuración (%)</label>
       </pv-ifta-label>
     </div>
 
     <div class="mb-3">
-      <pv-ifta-label style="width: 100%">
+      <pv-ifta-label style="width: 100%" v-if="isBondIssuer">
         <pv-input-number v-model="placementRate" locale="en-US" :min="0" input-id="placementRate" :minFractionDigits="0" :maxFractionDigits="4" style="width: 100%" />
         <label for="placementRate" class="font-semibold w-24">Tasa de colocación (%)</label>
       </pv-ifta-label>

@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import {AuthenticationService} from "../services/authentication.service.ts";
+import { UserService } from '../../shared/services/user.service.ts';
 import type {LoginResponse} from "../models/auth.entity.ts";
 import store from "../../shared/components/store.ts";
 
@@ -10,6 +11,7 @@ const password = ref<string>("");
 const error = ref<boolean>(false);
 
 const authenticationService = new AuthenticationService();
+const userService = new UserService();
 const router = useRouter();
 
 const login = async () => {
@@ -31,6 +33,11 @@ const login = async () => {
       token: loginResponse.token,
       userId: Number(loginResponse.userId),
     });
+
+    const res = await userService.getUserDetails(loginResponse.userId);
+    const roles = res.data.roles || [];
+    const isBondIssuer = roles.includes('ROLE_BOND_ISSUER');
+    store.commit('setIsBondIssuer', isBondIssuer);
 
     await router.push('/home');
   } catch (e) {

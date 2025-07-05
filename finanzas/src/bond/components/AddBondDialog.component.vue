@@ -17,6 +17,7 @@ const userId = Number(store.getters.getUserId);
 const interestRateType = computed(() => store.getters.getInterestRateType);
 const capitalization = computed(() => store.getters.getCapitalization);
 const currency = computed(() => store.getters.getCurrency);
+const isBondIssuer = computed(() => store.getters.getIsBondIssuer);
 
 const props = defineProps({
   visible: {
@@ -31,9 +32,9 @@ const name = ref("");
 const nominalValue = ref(0);
 const marketValue = ref(0);
 const duration = ref(0);
-const frequency = ref(0);
+const frequency = ref(30);
 const interestRate = ref(0);
-const gracePeriodType = ref(""); // TOTAL, PARCIAL, NINGUNO
+const gracePeriodType = ref("NINGUNO"); // TOTAL, PARCIAL, NINGUNO
 const gracePeriodDuration = ref(0);
 const discountRate = ref(0);
 const emissionDate = ref(""); // DD-MM-YYYY format
@@ -63,7 +64,7 @@ watch(localVisible, (val) => {
     frequency.value = 1;
     selectedFrequencyLabel.value = getFrequencyLabel(frequency.value);
     interestRate.value = 0;
-    gracePeriodType.value = "Ninguno";
+    gracePeriodType.value = "NINGUNO";
     gracePeriodDuration.value = 0;
     discountRate.value = 0;
     emissionDate.value = "";
@@ -76,6 +77,13 @@ const closeDialog = () => {
 
 const handleSave = () => {
   if (!name.value || nominalValue.value <= 0 || duration.value <= 0 || frequency.value <= 0 || discountRate.value <= 0) {
+    console.log('Validation failed:', {
+      name: name.value,
+      nominalValue: nominalValue.value,
+      duration: duration.value,
+      frequency: frequency.value,
+      discountRate: discountRate.value
+    });
     alert('Completa todos los campos correctamente.');
     return;
   }
@@ -219,14 +227,14 @@ closeDialog();
       </pv-ifta-label>
     </div>
 
-    <div class="mb-3">
+    <div class="mb-3" v-if="isBondIssuer">
       <pv-ifta-label style="width: 100%">
         <pv-input-number v-model="structuringRate" locale="en-US" :min="0" input-id="structuringRate" :minFractionDigits="0" :maxFractionDigits="4" style="width: 100%" />
         <label for="structuringRate" class="font-semibold w-24">Tasa de estructuración (%)</label>
       </pv-ifta-label>
     </div>
 
-    <div class="mb-3">
+    <div class="mb-3" v-if="isBondIssuer">
       <pv-ifta-label style="width: 100%">
         <pv-input-number v-model="placementRate" locale="en-US" :min="0" input-id="placementRate" :minFractionDigits="0" :maxFractionDigits="4" style="width: 100%" />
         <label for="placementRate" class="font-semibold w-24">Tasa de colocación (%)</label>
