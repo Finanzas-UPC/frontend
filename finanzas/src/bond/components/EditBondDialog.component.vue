@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import dayjs from 'dayjs';
-import {ref, watch} from 'vue';
+import {computed, ref, watch} from 'vue';
 import type { Bond } from "../models/bond.entity.ts";
 import {
   getCapitalizationDays,
@@ -28,7 +28,7 @@ const props = defineProps({
 const emit = defineEmits(['update:visible', 'save']);
 
 const store = useStore();
-const isBondIssuer = ref(store.getters.getIsBondIssuer);
+const isBondIssuer = computed(() => store.getters.getIsBondIssuer);
 
 const localVisible = ref(props.visible);
 
@@ -115,7 +115,7 @@ closeDialog();
     <div class="mb-3">
       <pv-ifta-label style="width: 100%">
         <pv-input-number v-model="nominalValue" locale="en-US" :min="0" input-id="nominalValue" style="width: 100%" />
-        <label for="nominalValue" class="font-semibold w-24">Monto ({{ currency }})</label>
+        <label for="nominalValue" class="font-semibold w-24">Valor nominal ({{ currency }})</label>
       </pv-ifta-label>
     </div>
 

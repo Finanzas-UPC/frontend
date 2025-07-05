@@ -7,6 +7,7 @@ interface State {
     currency: string;
     interestRateType: string;
     capitalization: number;
+    isBondIssuer: boolean;
 }
 
 const CAPITALIZATION_MAP: Record<string, number> = {
@@ -63,7 +64,7 @@ export default createStore<State>({
         },
         setIsBondIssuer(state: State, isBondIssuer: boolean) {
             state.isBondIssuer = isBondIssuer;
-            localStorage.setItem('isBondIssuer', isBondIssuer)
+            localStorage.setItem('isBondIssuer', String(isBondIssuer));
         }
     },
     actions: {
@@ -77,6 +78,7 @@ export default createStore<State>({
             commit('setCurrency', null);
             commit('setInterestRateType', null);
             commit('setCapitalization', null);
+            commit('setIsBondIssuer', null);
         },
         updateCurrency({ commit }: ActionContext<State, State>, currency: string) {
             commit('setCurrency', currency);

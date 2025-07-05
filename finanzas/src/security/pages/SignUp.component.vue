@@ -8,7 +8,7 @@ import { useToast } from "primevue/usetoast";
 const username = ref<string>('');
 const password = ref<string>('');
 const confirmPassword = ref<string>('');
-const selectedRole = ref<string>('');
+const selectedRole = ref<string>('Emisor');
 const error = ref<string>('');
 
 const authenticationService = new AuthenticationService();
@@ -111,7 +111,7 @@ const register = async () => {
               <label class="role-label">Selecciona tu rol</label>
               <div class="role-options">
                 <div class="flex flex-col gap-1">
-                  <pv-select-button name="selection" :options="options" v-model="selectedRole" />
+                  <pv-select-button name="selection" :options="options" v-model="selectedRole" :allow-empty="false" default-value="Emisor" />
                 </div>
               </div>
             </div>

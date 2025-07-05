@@ -2,7 +2,7 @@
 import {useRouter} from "vue-router";
 import {ref} from "vue";
 import { nextTick } from 'vue'
-import store from "./store.ts";
+import store from "../utils/store.ts";
 
 const router = useRouter();
 const menu = ref();

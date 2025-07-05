@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router';
 import {AuthenticationService} from "../services/authentication.service.ts";
 import { UserService } from '../../shared/services/user.service.ts';
 import type {LoginResponse} from "../models/auth.entity.ts";
-import store from "../../shared/components/store.ts";
+import { useStore } from 'vuex';
 
 const username = ref<string>("");
 const password = ref<string>("");
@@ -13,6 +13,7 @@ const error = ref<boolean>(false);
 const authenticationService = new AuthenticationService();
 const userService = new UserService();
 const router = useRouter();
+const store = useStore();
 
 const login = async () => {
   error.value = false;
@@ -34,7 +35,7 @@ const login = async () => {
       userId: Number(loginResponse.userId),
     });
 
-    const res = await userService.getUserDetails(loginResponse.userId);
+    const res = await userService.getUserDetails(Number(loginResponse.userId));
     const roles = res.data.roles || [];
     const isBondIssuer = roles.includes('ROLE_BOND_ISSUER');
     store.commit('setIsBondIssuer', isBondIssuer);

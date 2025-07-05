@@ -135,7 +135,7 @@ closeDialog();
     <div class="mb-3">
       <pv-ifta-label style="width: 100%">
         <pv-input-number v-model="nominalValue" locale="en-US" :min="0" input-id="nominalValue" style="width: 100%" />
-        <label for="nominalValue" class="font-semibold w-24">Monto ({{ currency }})</label>
+        <label for="nominalValue" class="font-semibold w-24">Valor nominal ({{ currency }})</label>
       </pv-ifta-label>
     </div>
 

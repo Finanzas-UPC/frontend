@@ -6,8 +6,8 @@ import App from './App.vue';
 import PrimeVue from 'primevue/config';
 import Aura from '@primeuix/themes/aura';
 import { definePreset } from "@primeuix/themes";
-import store from "./shared/components/store.ts";
-import router from "./shared/components/router.ts";
+import store from "./shared/utils/store.ts";
+import router from "./shared/utils/router.ts";
 // PrimeVue components
 import ToastService from 'primevue/toastservice';
 import Button from 'primevue/button';
