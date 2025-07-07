@@ -32,7 +32,7 @@ const handleDelete = () => {
 </script>
 
 <template>
-  <pv-card>
+  <pv-card class="bond-card">
     <template #header>
       <h5 class="text-center m-3 p-0">{{ bond.name }}</h5>
     </template>
@@ -55,5 +55,13 @@ const handleDelete = () => {
 </template>
 
 <style scoped>
-
+.bond-card {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
+  will-change: transform;
+}
+.bond-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+  z-index: 1;
+}
 </style>

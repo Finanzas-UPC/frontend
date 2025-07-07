@@ -177,7 +177,7 @@ closeDialog();
     <div class="mb-3">
       <pv-ifta-label style="width: 100%">
         <pv-input-number v-model="gracePeriodDuration" :disabled="gracePeriodType === 'NINGUNO'" locale="en-US" :min="0" input-id="gracePeriodDuration" style="width: 100%" />
-        <label for="gracePeriodDuration" class="font-semibold w-24">Duración periodo de gracia</label>
+        <label for="gracePeriodDuration" class="font-semibold w-24">Duración del periodo de gracia</label>
       </pv-ifta-label>
     </div>
 

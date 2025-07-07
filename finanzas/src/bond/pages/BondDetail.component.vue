@@ -1,16 +1,20 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import {ref, onMounted, computed} from 'vue';
 import { useRoute } from 'vue-router';
 import { bondService } from '../services/bond.service.ts';
 import { UserService } from '../../shared/services/user.service.ts';
 import type {BondMetrics} from "../models/bondmetrics.entity.ts";
 import type {CashFlowItem} from "../models/cashflow.entity.ts";
+import {formatCurrency} from "../../shared/utils/currencyFormatter.ts";
+import {useStore} from "vuex";
 
 const route = useRoute();
 const metrics = ref<BondMetrics | null>(null);
 const cashflow = ref<CashFlowItem[]>([]);
 const roles = ref<string[]>([]);
 const isBondIssuer = ref(false);
+const store = useStore();
+const currency = computed(() => store.getters.getCurrency);
 
 const userService = new UserService();
 
@@ -82,11 +86,15 @@ onMounted(async () => {
       </div>
       <div class="metric-card" v-if="isBondIssuer">
         <p class="label">TCEA</p>
-        <p class="value">{{ metrics.tcea * 100 }} %</p>
+        <p class="value">{{ (metrics.tcea * 100).toFixed(7) }} %</p>
       </div>
       <div class="metric-card" v-if="!isBondIssuer">
         <p class="label">TREA</p>
-        <p class="value">{{ metrics.trea * 100 }} %</p>
+        <p class="value">{{ (metrics.trea * 100).toFixed(7) }} %</p>
+      </div>
+      <div class="metric-card" v-if="!isBondIssuer">
+        <p class="label">Precio máximo</p>
+        <p class="value">{{ formatCurrency(metrics.maxPrice, currency) }}</p>
       </div>
     </div>
   </div>
@@ -110,8 +118,20 @@ onMounted(async () => {
       <pv-column field="amortization" header="Amortización" />
       <pv-column field="finalBalance" header="Saldo Final" />
       <pv-column field="totalPayment" header="Cuota" />
-      <pv-column v-if="isBondIssuer" field="issuerCashFlow" header="Flujo Emisor" />
-      <pv-column v-if="!isBondIssuer" field="bondHolderCashFlow" header="Flujo Bonista" />
+      <pv-column v-if="isBondIssuer" field="issuerCashFlow" header="Flujo Emisor">
+        <template #body="slotProps">
+        <span :style="{ color: slotProps.data.issuerCashFlow < 0 ? 'red' : 'inherit' }">
+          {{ slotProps.data.issuerCashFlow }}
+        </span>
+            </template>
+          </pv-column>
+          <pv-column v-if="!isBondIssuer" field="bondHolderCashFlow" header="Flujo Bonista">
+            <template #body="slotProps">
+        <span :style="{ color: slotProps.data.bondHolderCashFlow < 0 ? 'red' : 'inherit' }">
+          {{ slotProps.data.bondHolderCashFlow }}
+        </span>
+        </template>
+      </pv-column>
     </pv-datatable>
 
   </div>
