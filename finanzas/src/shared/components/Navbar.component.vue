@@ -6,13 +6,20 @@ import store from "../utils/store.ts";
 
 const router = useRouter();
 const menu = ref();
-const emit = defineEmits(['open-config']);
+const emit = defineEmits(['open-config', 'open-help']);
 
 const items = [
   {
     label: 'Configuración',
     icon: 'pi pi-cog',
     command: () => { openConfig(); },
+  },
+  {
+    label: 'Ayuda',
+    icon: 'pi pi-question-circle',
+    command: () => {
+      openHelp();
+    }
   },
   {
     label: 'Cerrar sesión',
@@ -27,6 +34,10 @@ const toggle = (event: any) => {
 
 const openConfig = () => {
   emit('open-config');
+}
+
+const openHelp = () => {
+  emit('open-help');
 }
 
 const logout = () => {
@@ -56,6 +67,12 @@ const logout = () => {
                    icon="pi pi-cog"
                    class="text-white mr-3"
                    aria-label="settings"/>
+        <pv-button @click="openHelp"
+            icon="pi pi-question-circle"
+            text
+            class="text-white mr-3"
+            aria-label="Help"
+        />
         <pv-button @click="logout"
                    text
                    icon="pi pi-sign-out"

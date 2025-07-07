@@ -25,6 +25,7 @@ import InputNumber from 'primevue/inputnumber';
 import Toast from 'primevue/toast';
 import DatePicker from 'primevue/datepicker';
 import SelectButton from 'primevue/selectbutton';
+import Message from 'primevue/message';
 
 const blue = definePreset(Aura, {
     semantic: {
@@ -100,5 +101,6 @@ app.component('pv-input-number', InputNumber);
 app.component('pv-toast', Toast);
 app.component('pv-datepicker', DatePicker);
 app.component('pv-select-button', SelectButton);
+app.component('pv-message', Message);
 app.use(ToastService);
 app.mount('#app');

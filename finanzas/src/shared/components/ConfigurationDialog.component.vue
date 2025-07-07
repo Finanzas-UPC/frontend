@@ -132,7 +132,7 @@ const reloadPage = () => {
       <div class="flex items-center mb-4">
         <pv-ifta-label style="margin: 0 auto; width: 80%;">
           <pv-select v-model="selectedCapitalization"
-                     :options="interestRateType === 'EFECTIVA' ? ['NO APLICA'] : capitalizationOptions"
+                     :options="interestRateType === 'EFECTIVA' ? ['No Aplica'] : capitalizationOptions"
                      class="w-full mb-3"
                      :disabled="interestRateType === 'EFECTIVA'"
           />
