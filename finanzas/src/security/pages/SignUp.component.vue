@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { AuthenticationService } from "../services/authentication.service.ts";
 import { useToast } from "primevue/usetoast";
+import {isAxiosError} from "axios";
 
 
 const username = ref<string>('');
@@ -27,6 +28,11 @@ const register = async () => {
 
   if (!username.value || !password.value || !confirmPassword.value) {
     error.value = 'Todos los campos son obligatorios';
+    return;
+  }
+
+  if (username.value.trim().length < 3) {
+    error.value = 'El nombre de usuario debe tener al menos 3 caracteres';
     return;
   }
 
@@ -64,7 +70,11 @@ const register = async () => {
       }, 2000);
     }
   } catch (err) {
-    error.value = 'Error al registrar. Inténtalo nuevamente';
+    if (isAxiosError(err)) {
+      error.value = err.response?.data?.message ?? 'Error al registrar. Inténtalo nuevamente';
+    } else {
+      error.value = 'Error al registrar. Inténtalo nuevamente';
+    }
   }
 };
 </script>
